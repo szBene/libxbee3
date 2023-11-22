@@ -40,7 +40,7 @@ xbee_err xbee_sZB_ota_rx_func(struct xbee *xbee, void *arg, unsigned char identi
 	
 	if ((ret = xbee_pktAlloc(&iPkt, NULL, 2)) != XBEE_ENONE) return ret;
 	
-#warning TODO - check that these are the correct addresses to be using
+// #warning TODO - check that these are the correct addresses to be using
 	address->addr64_enabled = 1;
 	memcpy(address->addr64, &(buf->data[1]), 8);
 	address->addr16_enabled = 1;

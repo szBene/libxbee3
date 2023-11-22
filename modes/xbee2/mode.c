@@ -104,7 +104,7 @@ xbee_err xbee_s2_transmitStatus_rx_func(struct xbee *xbee, void *arg, unsigned c
 		goto die1;
 	}
 	
-#warning TODO - currently missing out on the resolved network address, retry count, and discovery status
+// #warning TODO - currently missing out on the resolved network address, retry count, and discovery status
 	frameInfo->active = 1;
 	frameInfo->id = buf->data[1];
 	frameInfo->retVal = buf->data[5];

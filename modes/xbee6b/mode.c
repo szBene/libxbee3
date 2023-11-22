@@ -190,7 +190,7 @@ xbee_err xbee_s6b_frameError_rx_func(struct xbee *xbee, void *arg, unsigned char
 	if ((ret = xbee_pktAlloc(&iPkt, NULL, 1)) != XBEE_ENONE) return ret;
 	
 	iPkt->dataLen = 1;
-#warning TODO - figure out how to use this feedback...
+// #warning TODO - figure out how to use this feedback...
 	iPkt->data[0] = buf->data[1];
 	iPkt->data[iPkt->dataLen] = '\0';
 	

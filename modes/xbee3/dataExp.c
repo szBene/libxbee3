@@ -127,7 +127,7 @@ xbee_err xbee_s3_dataExp_tx_func(struct xbee *xbee, struct xbee_con *con, void *
 	iBuf->data[pos] = 0;
 	if (settings->disableAck)       iBuf->data[pos] |= 0x01;
 	if (settings->noRoute)          iBuf->data[pos] |= 0x02;
-#warning TODO - currently missing support for NAK and Trace Route messages
+// #warning TODO - currently missing support for NAK and Trace Route messages
 	                                                      pos++;
 
 	memcpy(&(iBuf->data[pos]), buf, len);                 pos += len;
