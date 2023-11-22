@@ -34,10 +34,19 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#include "internal.h"
+#include "time.h"
+#include "xsys.h"
+#include <unistd.h>
+
 int xsys_serialSetup(struct xbee_serialInfo *info) {
 	struct termios tc;
 	speed_t chosenbaud;
 	
+	#ifndef XBEE_EMISSINGPARAM
+	#define XBEE_EMISSINGPARAM 1 // Define the missing constant
+	#endif
+
 	if (!info) return XBEE_EMISSINGPARAM;
 	
 	switch (info->baudrate) {
@@ -90,6 +99,10 @@ int xsys_serialSetup(struct xbee_serialInfo *info) {
 #endif
 	}
 	
+	#ifndef O_CLOEXEC
+	#define O_CLOEXEC 0
+	#endif
+
 	if ((info->dev.fd = open(info->device, O_RDWR | O_NOCTTY | O_SYNC | O_CLOEXEC)) == -1) {
 		perror("open()");
 		return XBEE_EIO;
@@ -135,7 +148,11 @@ int xsys_serialSetup(struct xbee_serialInfo *info) {
 #ifdef XBEE_NO_RTSCTS
 	tc.c_cflag &= ~ CRTSCTS;          /* disable hardware CTS/RTS flow control */
 #else
-	tc.c_cflag |=   CRTSCTS;          /* enable hardware CTS/RTS flow control */
+	#ifdef XBEE_NO_RTSCTS
+		tc.c_cflag &= ~CRTSCTS;          /* disable hardware CTS/RTS flow control */
+	#else
+		tc.c_cflag |= CRTSCTS;           /* enable hardware CTS/RTS flow control */
+	#endif
 #endif
 	/* local flags */
 	tc.c_lflag &= ~ ISIG;             /* disable generating signals */

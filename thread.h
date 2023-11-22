@@ -21,6 +21,11 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "internal.h"
+#include "time.h"
+#include "xsys.h"
+#include <unistd.h>
+
 extern struct xbee_ll_head *threadList;
 extern xsys_thread_key threadInfoKey;
 

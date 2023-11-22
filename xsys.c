@@ -22,6 +22,9 @@
 #include <stdlib.h>
 
 #include "internal.h"
+#include "time.h"
+#include "xsys.h"
+#include <unistd.h>
 
 #define __XBEE_XSYS_LOAD_C
 #if defined(__MACH__) /* ------- */

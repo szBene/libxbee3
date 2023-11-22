@@ -37,6 +37,14 @@
 
 /* import Keith Shortridge's semaphore implementation */
 #include "xsys_darwin/sem_timedwait.c"
+#include "xbee.h"
+
+#include "internal.h"
+#include <asm-generic/termbits.h>
+#include "time.h"
+#include "xsys.h"
+#include <termios.h>
+#include <unistd.h>
 
 int xsys_serialSetup(struct xbee_serialInfo *info) {
 	struct termios tc;
@@ -251,7 +259,28 @@ int _xsys_sem_init(xsys_sem *info) {
 
 	/* try to setup an unnamed semaphore... */
 
-	info->opened = 0;
+	if (((info->sem) = malloc(sizeof(sem_t))) == NULL) {
+		errno = ENOMEM;
+		return -1;
+	}
+	if ((ret = sem_init(info->sem, 0, 0)) == 0) return 0;
+	free(info->sem);
+
+	for (retries = 10; retries; retries--) {
+		/* try to setup a named semaphore... */
+		if (((info->sem) = sem_open("/libxbee", O_CREAT | O_EXCL, 0666, 0)) != (sem_t*)-1) {
+			/* ... and on success, unlink it! */
+			sem_unlink("/libxbee");
+			return 0;
+		}
+
+		if (errno != EEXIST) break;
+
+		/* if it already exists, then wait a bit, it should be unlinked */
+		usleep(100);
+	}
+
+	info->sem = NULL;
 	if (((info->sem) = malloc(sizeof(sem_t))) == NULL) {
 		errno = ENOMEM;
 		return -1;
